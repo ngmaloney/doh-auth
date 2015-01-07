@@ -1,0 +1,57 @@
+.container
+  %h1 Oauth2 Inspector
+  %form{action: "auth", method: "post"}
+    .form-group
+      %label{for: "client_id"} Client ID:
+      %input.form-control{type: "text", name: "client_id", value: @client_id}
+
+    .form-group
+      %label{for: "client_secret"} Client Secret:
+      %input.form-control{type: "text", name: "client_secret", value: @client_secret}
+
+    .form-group
+      %label{for: "site"} Site URI:
+      %input.form-control{type: "text", name: "site", value: @site}
+
+    .form-group
+      %label{for: "auth_path"} Auth Path:
+      %input.form-control{type: "text", name: "auth_path", value: @auth_path}
+
+    .form-group
+      %label{for: "token_path"} Token Path:
+      %input.form-control{type: "text", name: "token_path", value: @token_path}
+
+    .form-group
+      %label{for: "redirect_uri"} Redirect URI:
+      %input.form-control{type: "text", name: "redirect_uri", value: @redirect_uri}
+
+    .form-group
+      %label{for: "scope"} Scope:
+      %input.form-control{type: "text", name: "scope", value: @scope}
+
+    .form-group
+      %label{for: "resource"} API Resource:
+      %input.form-control{type: "text", name: "resource", value: @resource}
+
+    .form-group
+      %input.btn.btn-primary{type: "submit"}
+
+- if @content
+  .container
+    .row
+      .col-md-12
+        %h2 Access Token:
+        %code
+          = @token
+
+    .row
+      .col-md-12
+        %h2 Response:
+        %code
+          = @content
+
+    .row
+      .col-md-12
+        %h2 Curl:
+        %code
+          curl -H "Authorization: Bearer #{@token}" #{@site}#{@resource}
