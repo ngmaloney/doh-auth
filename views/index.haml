@@ -1,5 +1,5 @@
 .container
-  %h1 Oauth2 Inspector
+  %h1 Oauth2 API Explorer
   %form{action: "auth", method: "post"}
     .form-group
       %label{for: "client_id"} Client ID:
@@ -34,15 +34,30 @@
       %input.form-control{type: "text", name: "resource", value: @resource}
 
     .form-group
-      %input.btn.btn-primary{type: "submit"}
+      %input.btn.btn-primary{type: "submit", value: "Request Access Token"}
+      %a.btn.btn-danger{href: "reset"} Reset to defaults
+
+
+- if @auth_token
+  .container
+    .row
+      .col-md-12
+        %h1 API Request
+        %form{action: "request", method: "post"}
+          .form-group
+            %label{for: "resource"} API Resource:
+            %input.form-control{type: "text", name: "resource", value: @resource}
+
+          .form-group
+            %input.btn.btn-primary{type: "submit", value: "Get Resource"}
 
 - if @content
   .container
     .row
       .col-md-12
-        %h2 Access Token:
+        %h2 Auth Token:
         %code
-          = @token
+          = @auth_token
 
     .row
       .col-md-12
@@ -54,4 +69,4 @@
       .col-md-12
         %h2 Curl:
         %code
-          curl -H "Authorization: Bearer #{@token}" #{@site}#{@resource}
+          curl -H "Authorization: Bearer #{@auth_token}" #{@site}#{@resource}

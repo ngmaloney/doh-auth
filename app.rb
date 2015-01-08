@@ -1,4 +1,5 @@
 require "sinatra"
+require "pry"
 require "oauth2"
 require "json"
 
@@ -17,14 +18,29 @@ post "/auth" do
   redirect authorize_url
 end
 
+#TODO: Dry this up
+post "/request" do
+  save_params && assign_defaults
+  token = OAuth2::AccessToken.new(client, @auth_token)
+  resp = token.get(@resource)
+  json = JSON.parse(resp.body)
+  @content = JSON.pretty_generate(json)
+  haml :index
+end
+
 get "/callback" do
   assign_defaults
   token = client.auth_code.get_token(params[:code], redirect_uri: @redirect_uri)
   resp = token.get(@resource)
   json = JSON.parse(resp.body)
-  @token = token.token
+  @auth_token = session[:auth_token] = token.token
   @content = JSON.pretty_generate(json)
   haml :index
+end
+
+get "/reset" do
+  session.clear
+  redirect "/"
 end
 
 def client
@@ -33,7 +49,7 @@ end
 
 def save_params
   PARAMS.each do |var|
-    session[var] = params[var]
+    session[var] = params[var] if params[var]
   end
 end
 
@@ -47,4 +63,5 @@ def assign_defaults
   @redirect_uri = session[:redirect_uri] || "http://#{request.env["HTTP_HOST"]}/callback"
   @scope = session[:scope] || defaults[:scope]
   @resource = session[:resource] || defaults[:resource]
+  @auth_token = session[:auth_token] if session[:auth_token]
 end
