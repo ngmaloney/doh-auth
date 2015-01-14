@@ -1,72 +1,85 @@
 .container
-  %h1 Oauth2 API Explorer
-  %form{action: "auth", method: "post"}
-    .form-group
-      %label{for: "client_id"} Client ID:
-      %input.form-control{type: "text", name: "client_id", value: @client_id}
+  .row
+    .col-md-12
+      .tab-panel{role: "tabpanel"}
+        %ul.nav.nav-tabs{role: "tablist"}
+          %li
+            %a{"aria-controls" => "create-token", "data-toggle" => "tab", href: "#create-token"} Create Token
+          - if @auth_token
+            %li
+              %a{"aria-controls" => "api-resource", "data-toggle" => "tab", href: "#api-resource"} Resource Request
+            %li
+              %a{"aria-controls" => "show-token", "data-toggle" => "tab", href: "#show-token"} Token Details
 
-    .form-group
-      %label{for: "client_secret"} Client Secret:
-      %input.form-control{type: "text", name: "client_secret", value: @client_secret}
+      .tab-content
+        #create-token.tab-pane.active
+          %h1 Create Auth Token
+          %form{action: "auth#create-token", method: "post"}
+            .form-group
+              %label{for: "client_id"} Client ID:
+              %input.form-control{type: "text", name: "client_id", value: @client_id}
 
-    .form-group
-      %label{for: "site"} Site URI:
-      %input.form-control{type: "text", name: "site", value: @site}
+            .form-group
+              %label{for: "client_secret"} Client Secret:
+              %input.form-control{type: "text", name: "client_secret", value: @client_secret}
 
-    .form-group
-      %label{for: "auth_path"} Auth Path:
-      %input.form-control{type: "text", name: "auth_path", value: @auth_path}
+            .form-group
+              %label{for: "site"} Site URI:
+              %input.form-control{type: "text", name: "site", value: @site}
 
-    .form-group
-      %label{for: "token_path"} Token Path:
-      %input.form-control{type: "text", name: "token_path", value: @token_path}
+            .form-group
+              %label{for: "auth_path"} Auth Path:
+              %input.form-control{type: "text", name: "auth_path", value: @auth_path}
 
-    .form-group
-      %label{for: "redirect_uri"} Redirect URI:
-      %input.form-control{type: "text", name: "redirect_uri", value: @redirect_uri}
+            .form-group
+              %label{for: "token_path"} Token Path:
+              %input.form-control{type: "text", name: "token_path", value: @token_path}
 
-    .form-group
-      %label{for: "scope"} Scope:
-      %input.form-control{type: "text", name: "scope", value: @scope}
+            .form-group
+              %label{for: "redirect_uri"} Redirect URI:
+              %input.form-control{type: "text", name: "redirect_uri", value: @redirect_uri}
 
-    .form-group
-      %label{for: "resource"} API Resource:
-      %input.form-control{type: "text", name: "resource", value: @resource}
+            .form-group
+              %label{for: "scope"} Scope:
+              %input.form-control{type: "text", name: "scope", value: @scope}
 
-    .form-group
-      %input.btn.btn-primary{type: "submit", value: "Request Access Token"}
-      %a.btn.btn-danger{href: "reset"} Reset to defaults
+            .form-group
+              %label{for: "resource"} API Resource:
+              %input.form-control{type: "text", name: "resource", value: @resource}
 
+            .form-group
+              %input.btn.btn-primary{type: "submit", value: "Request Access Token"}
+              %a.btn.btn-danger{href: "reset"} Reset to defaults
 
-- if @auth_token
-  .container
-    .row
-      .col-md-12
-        %h1 API Request
-        %form{action: "request", method: "post"}
-          .form-group
-            %label{for: "resource"} API Resource:
-            %input.form-control{type: "text", name: "resource", value: @resource}
+        - if @auth_token
+          #api-resource.tab-pane
+            %h1 API Resource Request
+            %form{action: "request#api-resource", method: "post"}
+              .form-group
+                %label{for: "resource"} API Resource:
+                %input.form-control{type: "text", name: "resource", value: @resource}
 
-          .form-group
-            %input.btn.btn-primary{type: "submit", value: "Get Resource"}
+              .form-group
+                %input.btn.btn-primary{type: "submit", value: "Get Resource"}
+
+          #show-token.tab-pane
+            %h1 Token Details
+            .container
+              .panel.panel-default
+                .panel-heading Auth Token
+                .panel-body.code
+                  = @auth_token
+
+              .panel.panel-default
+                .panel-heading Curl Command
+                .panel-body
+                  curl -H "Authorization: Bearer #{@auth_token}" #{@site}#{@resource}
 
 - if @content
   .container
-    .row
-      .col-md-12
-        %h2 Auth Token:
-        %code
-          = @auth_token
-
-    .row
-      .col-md-12
-        %h2 Response:
-        %code
-          = @content
-
-    .row
-      .col-md-12
-        %h2 Curl:
-        %code
-          curl -H "Authorization: Bearer #{@auth_token}" #{@site}#{@resource}
+    .panel.panel-default
+      .panel-heading Response
+      .panel-body
+        .hightlight
+          %pre.prettyprint.language-js
+            = @content

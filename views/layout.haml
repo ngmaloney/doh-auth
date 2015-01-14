@@ -2,12 +2,29 @@
 %html{:lang => "en"}
   %head
     %meta{:charset => "utf-8"}
-    %title Doh! Auth2
-    %link{rel: "stylesheet", href: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"}
-    %script{src: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"}
-    %script{src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"}
+    %title Oauth Explorer
+    %link{rel: "stylesheet", href: "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"}
+    %link{rel: "stylesheet", href: "//google-code-prettify.googlecode.com/svn/trunk/src/prettify.css"}
+    %link{rel: "stylesheet", href: "//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/slate/bootstrap.min.css"}
+    %script{src: "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"}
+    %script{src: "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"}
+    %script{src: "//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"}
+
     %style
-      code { word-wrap: break-word; }
+      div.panel-body { overflow: hidden; }
+      div.panel-heading { font-weight: bold; }
+      div.code { word-wrap: break-word; }
+
+    :javascript
+      $(function () {
+       var activeTab = $('[href=' + location.hash + ']');
+       activeTab && activeTab.tab('show');
+      });
 
   %body
+    %nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          %a.navbar-brand{href: "/"}
+            OAUTH Explorer
     = yield
